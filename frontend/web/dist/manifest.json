@@ -1,0 +1,8 @@
+{
+  "main.css": "/dist/bundle.css",
+  "main.js": "/dist/app.js",
+  "vendors-node_modules_pdfjs-dist_build_pdf_worker_mjs.app.js": "/dist/vendors-node_modules_pdfjs-dist_build_pdf_worker_mjs.app.js",
+  "bundle.css.map": "/dist/bundle.css.map",
+  "app.js.map": "/dist/app.js.map",
+  "vendors-node_modules_pdfjs-dist_build_pdf_worker_mjs.app.js.map": "/dist/vendors-node_modules_pdfjs-dist_build_pdf_worker_mjs.app.js.map"
+}

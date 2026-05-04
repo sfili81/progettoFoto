@@ -1,0 +1,56 @@
+/** FORM CSS **/
+#contactform-privacy {
+  appearance: none;
+}
+.form-group.prv label {
+    position: relative;
+    /*font-family:var(--poppins);*/
+    font-size: 18px;
+    padding-inline-start: 30px !important;
+    line-height: 1.5;
+    text-align: left;
+    color: #000;
+    display: inline-block;
+    @media(max-width:768px){
+        font-size: clamp(18px,3.9062vw,26px);
+    }
+    & a {
+        color: #000;
+        text-decoration: underline;
+    }
+}
+
+.form-group.prv label::after {
+    content: "";
+    position: absolute;
+    left: 3px;
+    top: 9px;
+    display: none;
+    height: 7px;
+    width: 11px;
+    border-left: 2px solid #000;
+    border-bottom: 2px solid #000;
+    transform: rotate(-45deg);
+}
+
+.form-group.prv label::before {
+    width: 18px;
+    height: 18px;
+    border-color: #231f20;
+    border-radius: 4px;
+    cursor: pointer;
+    content: "";
+    display: inline-block;
+    position: absolute;
+    top: 5px;
+    left: 0;
+    border: 1px solid rgba(0, 0, 0, .15);
+    background-color: #fff;
+    transition: border .15s ease-in-out, color .15s ease-in-out;
+}
+
+.form-group.prv input[type="checkbox"]:checked + label::after {
+    display: block;
+}
+.form-group.prv input.is-invalid + label::before,
+.form-group.prv input.is-invalid + label::before { border:1px solid red; }

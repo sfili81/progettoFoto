@@ -13,18 +13,28 @@
 - If you want to use Tailwind and Webpack you must first install node etc etc Follow Guide
 
 
-Per far sì che il terminale usi il PHP di MAMP, aggiungi questa riga al tuo `~/.zshrc`:
-`export PATH=/Applications/MAMP/bin/php/php8.3.x/bin:$PATH`
-Sostituisci php8.3.x con il nome esatto della cartella. Prima verificalo con:
-`ls /Applications/MAMP/bin/php/`
-Ti elencherà le versioni installate, es. php8.3.4. Poi:
-bash# Apri il file di configurazione
-`nano ~/.zshrc`
+### MAC OS
 
- Aggiungi in fondo
-`export PATH=/Applications/MAMP/bin/php/php8.3.4/bin:$PATH`
-Salva con Ctrl+O → Invio → Ctrl+X, poi ricarica:
-`source ~/.zshrc`
-Ora php -v dovrebbe mostrarti la 8.3. Se usi bash invece di zsh, il file è `~/.bash_profile` anziché `~/.zshrc`.
+1. Dal terminale digitare:
+   ``` 
+   sudo nano /etc/hosts 
+   ```
 
-a ME aveva dato buona questa `export PATH="/opt/homebrew/opt/php@8.3/bin:/opt/homebrew/opt/php@8.3/sbin:$PATH"`
+2. Si aprirà un file, aggiungere in fondo il nome del sito locale:
+   ``` 127.0.0.1  yiicms.com ```
+
+3. Salvare con `CTRL + X ` 
+
+4. Aggiungere nel file `httpd-vhosts.conf` (Applicazioni/config/apache//extra/) le seguenti regole
+    ```
+    <VirtualHost *:80>
+    DocumentRoot "/Applications/MAMP/htdocs/progettofoto"
+    ServerName progettofoto.local
+    ServerAlias progettofoto.local
+    <Directory "/Applications/MAMP/htdocs/progettofoto"> 
+                AllowOverride all
+                Require all granted 
+    </Directory> 
+</VirtualHost>
+    ``` 
+5. Stoppare mampp e riavviarlo 

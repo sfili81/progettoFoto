@@ -39,3 +39,7 @@
 5. Stoppare mampp e riavviarlo 
 
 ```INSERT INTO admin (id, username, auth_key, password_hash, password_reset_token, email, status, created_at, updated_at, verification_token) VALUES (NULL, 'admin', 'me6UBncIKFpb70o-lFMb1MXnhFdH1Lo9', '$2y$13$KpiuV1YzsBfn8KuJwYSTiO38fjjTxzhu3ZHSbgmmq7Dzj7WshTsUS', NULL, 'admin@admin.com', '10', '1707730060', '1707730060', '39aF_1cO9xbLp0iGiDv8L2WlFvLivzbH_1707730060')``` 
+
+
+chmod -R 777 /Applications/MAMP/htdocs/progettofoto
+

@@ -13,16 +13,18 @@
 - If you want to use Tailwind and Webpack you must first install node etc etc Follow Guide
 
 
-Per far sì che il terminale usi il PHP di MAMP, aggiungi questa riga al tuo ~/.zshrc:
-bashexport PATH=/Applications/MAMP/bin/php/php8.3.x/bin:$PATH
+Per far sì che il terminale usi il PHP di MAMP, aggiungi questa riga al tuo `~/.zshrc`:
+`export PATH=/Applications/MAMP/bin/php/php8.3.x/bin:$PATH`
 Sostituisci php8.3.x con il nome esatto della cartella. Prima verificalo con:
-bashls /Applications/MAMP/bin/php/
+`ls /Applications/MAMP/bin/php/`
 Ti elencherà le versioni installate, es. php8.3.4. Poi:
 bash# Apri il file di configurazione
-nano ~/.zshrc
+`nano ~/.zshrc`
 
-# Aggiungi in fondo
-export PATH=/Applications/MAMP/bin/php/php8.3.4/bin:$PATH
+ Aggiungi in fondo
+`export PATH=/Applications/MAMP/bin/php/php8.3.4/bin:$PATH`
 Salva con Ctrl+O → Invio → Ctrl+X, poi ricarica:
-bashsource ~/.zshrc
-Ora php -v dovrebbe mostrarti la 8.3. Se usi bash invece di zsh, il file è ~/.bash_profile anziché ~/.zshrc.
+`source ~/.zshrc`
+Ora php -v dovrebbe mostrarti la 8.3. Se usi bash invece di zsh, il file è `~/.bash_profile` anziché `~/.zshrc`.
+
+a ME aveva dato buona questa `export PATH="/opt/homebrew/opt/php@8.3/bin:/opt/homebrew/opt/php@8.3/sbin:$PATH"`

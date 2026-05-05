@@ -168,7 +168,7 @@ async function submitForm() {
   params.append('code',    form.value.code);
   params.append('email',   form.value.email);
   params.append('note',    form.value.note);
-  params.append('fotoIds', JSON.stringify(fotos.value.map((f) => f.id)));
+  params.append('fotoIds', JSON.stringify(fotos.value.map((f) => ({ id: f.id, name: f.caption }))));
 
   try {
     const res = await fetch(props.inviaUrl, {

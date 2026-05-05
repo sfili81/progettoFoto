@@ -26,7 +26,7 @@ class ListaController extends Controller
         $code    = trim($req->post('code',  ''));
         $email   = trim($req->post('email', ''));
         $note    = trim($req->post('note',  ''));
-        $fotoIds = Json::decode($req->post('fotoIds', '[]') ?: '[]');
+        $fotosRaw = Json::decode($req->post('fotoIds', '[]') ?: '[]');
 
         if (!$code) {
             Yii::$app->response->statusCode = 422;
@@ -38,17 +38,22 @@ class ListaController extends Controller
             return ['error' => 'Email non valida.'];
         }
 
-        if (empty($fotoIds)) {
+        if (empty($fotosRaw)) {
             Yii::$app->response->statusCode = 422;
             return ['error' => 'Nessuna foto selezionata.'];
         }
+
+        $fotos = array_map(static fn($f) => [
+            'id'   => (int)($f['id']   ?? 0),
+            'name' => (string)($f['name'] ?? ''),
+        ], $fotosRaw);
 
         $cart               = new Cart();
         $cart->state        = 0;
         $cart->email        = $email;
         $cart->note         = $note ?: null;
         $cart->code         = $code;
-        $cart->list_images  = Json::encode(array_map('intval', $fotoIds));
+        $cart->list_images  = Json::encode($fotos);
         $cart->created_at   = time();
         $cart->updated_at   = time();
 

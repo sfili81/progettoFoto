@@ -17,8 +17,8 @@ use frontend\models\SignupForm;
 use frontend\models\ContactForm;
 
 use common\models\Pages;
-
 use common\models\News;
+use common\models\Gara;
 use common\controllers\BaseTranslateController;
 
 
@@ -82,9 +82,12 @@ class SiteController extends BaseTranslateController
      */
     public function actionIndex()
     {
-        //recupero modello pagina
         $page = Pages::findone(['pages_tag' => 'index']);
-        return $this->render('index');
+        $gare = Gara::find()
+            ->where(['active' => 1])
+            ->orderBy(['root' => SORT_ASC, 'lft' => SORT_ASC])
+            ->all();
+        return $this->render('index', ['gare' => $gare]);
     }
 
     /**

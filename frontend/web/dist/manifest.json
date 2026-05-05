@@ -1,8 +1,7 @@
 {
-  "main.css": "/dist/bundle.css",
-  "main.js": "/dist/app.js",
-  "vendors-node_modules_pdfjs-dist_build_pdf_worker_mjs.app.js": "/dist/vendors-node_modules_pdfjs-dist_build_pdf_worker_mjs.app.js",
-  "bundle.css.map": "/dist/bundle.css.map",
-  "app.js.map": "/dist/app.js.map",
-  "vendors-node_modules_pdfjs-dist_build_pdf_worker_mjs.app.js.map": "/dist/vendors-node_modules_pdfjs-dist_build_pdf_worker_mjs.app.js.map"
+  "main.css": "/dist/bundle.64c0e4da26dab04fadf8.min.css",
+  "main.js": "/dist/app.f61d42c3d69141653a86.min.js",
+  "app.min.js": "/dist/app.920833140554cdad2ad7.min.js",
+  "bundle.min.css.map": "/dist/bundle.64c0e4da26dab04fadf8.min.css.map",
+  "app.min.js.map": "/dist/app.920833140554cdad2ad7.min.js.map"
 }

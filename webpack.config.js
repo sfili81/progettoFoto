@@ -4,6 +4,7 @@ const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const CssMinimizerPlugin = require('css-minimizer-webpack-plugin');
 const { WebpackManifestPlugin } = require('webpack-manifest-plugin');
 const { CleanWebpackPlugin } = require('clean-webpack-plugin');
+const { VueLoaderPlugin } = require('vue-loader');
 //const TerserPlugin = require("terser-webpack-plugin");
 
 const PATHS = {
@@ -33,12 +34,17 @@ module.exports = (env, argv) => {
     module: {
       rules: [
         {
+          test: /\.vue$/,
+          loader: 'vue-loader',
+        },
+        {
           test: /\.(sa|sc|c)ss$/,
           use: [MiniCssExtractPlugin.loader, 'css-loader', 'sass-loader', 'postcss-loader'],
         },
       ],
     },
     plugins: [
+      new VueLoaderPlugin(),
       new CleanWebpackPlugin(),
       new MiniCssExtractPlugin({
         filename: mode === 'production' ? 'bundle.[contenthash].min.css' : 'bundle.css',
@@ -59,6 +65,7 @@ module.exports = (env, argv) => {
       ],
     },
     resolve: {
+      extensions: ['.js', '.vue'],
       modules: [path.resolve(__dirname, 'node_modules'), 'node_modules'],
     },
   };

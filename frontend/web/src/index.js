@@ -14,7 +14,10 @@ console.log('[webpack bundle js]');
 // PDF.js (5.x)
 import { initPdfViewer } from './pdf-viewer';
 import Yii2FormValidator from '../js/Yii2FormValidator.js';
+import { initGaraSelector } from './gara-selector';
+import { initListaFoto }    from './lista-foto';
 
-initPdfViewer(); // auto-detect mode: single / multi
-
+initPdfViewer();
 new Yii2FormValidator('contact-form');
+initGaraSelector();
+initListaFoto();

@@ -5,7 +5,10 @@
     <div v-if="submitted" class="text-center py-5">
       <div class="display-1 mb-3">✓</div>
       <h2>Richiesta inviata!</h2>
-      <p class="text-muted">Ti contatteremo all'indirizzo <strong>{{ form.email }}</strong>.</p>
+      <p class="text-muted">
+        Ti contatteremo all'indirizzo <strong>{{ form.email }}</strong>.<br>
+        Codice: <strong class="font-monospace">{{ form.code }}</strong>.
+      </p>
       <a href="/" class="btn btn-outline-primary mt-3">Torna alla home</a>
     </div>
 
@@ -21,7 +24,9 @@
       <!-- Colonna foto -->
       <div class="col-lg-8">
         <div class="d-flex justify-content-between align-items-center mb-3">
-          <h4 class="mb-0">{{ fotos.length }} {{ fotos.length === 1 ? 'foto selezionata' : 'foto selezionate' }}</h4>
+          <h4 class="mb-0">
+            {{ fotos.length }} {{ fotos.length === 1 ? 'foto selezionata' : 'foto selezionate' }}
+          </h4>
           <button class="btn btn-sm btn-outline-danger" @click="clearAll">Svuota lista</button>
         </div>
 
@@ -48,27 +53,16 @@
             <form @submit.prevent="submitForm" novalidate>
 
               <div class="mb-3">
-                <label class="form-label">Nome <span class="text-danger">*</span></label>
+                <label class="form-label">Codice <span class="text-danger">*</span></label>
                 <input
-                  v-model.trim="form.nome"
+                  v-model.trim="form.code"
                   type="text"
                   class="form-control"
-                  :class="{ 'is-invalid': errors.nome }"
-                  autocomplete="given-name"
+                  :class="{ 'is-invalid': errors.code }"
+                  autocomplete="off"
+                  placeholder="Es. GARA2025"
                 >
-                <div v-if="errors.nome" class="invalid-feedback">{{ errors.nome }}</div>
-              </div>
-
-              <div class="mb-3">
-                <label class="form-label">Cognome <span class="text-danger">*</span></label>
-                <input
-                  v-model.trim="form.cognome"
-                  type="text"
-                  class="form-control"
-                  :class="{ 'is-invalid': errors.cognome }"
-                  autocomplete="family-name"
-                >
-                <div v-if="errors.cognome" class="invalid-feedback">{{ errors.cognome }}</div>
+                <div v-if="errors.code" class="invalid-feedback">{{ errors.code }}</div>
               </div>
 
               <div class="mb-3">
@@ -79,13 +73,19 @@
                   class="form-control"
                   :class="{ 'is-invalid': errors.email }"
                   autocomplete="email"
+                  placeholder="nome@esempio.it"
                 >
                 <div v-if="errors.email" class="invalid-feedback">{{ errors.email }}</div>
               </div>
 
               <div class="mb-3">
                 <label class="form-label">Note</label>
-                <textarea v-model="form.note" class="form-control" rows="3" placeholder="Eventuali richieste..."></textarea>
+                <textarea
+                  v-model="form.note"
+                  class="form-control"
+                  rows="4"
+                  placeholder="Eventuali richieste o informazioni aggiuntive..."
+                ></textarea>
               </div>
 
               <div v-if="serverError" class="alert alert-danger py-2 small">{{ serverError }}</div>
@@ -111,12 +111,16 @@ import { ref, onMounted } from 'vue';
 
 const LS_KEY = 'garaFotoLista';
 
+const props = defineProps({
+  inviaUrl: { type: String, default: '/lista/invia' },
+});
+
 const fotos       = ref([]);
 const submitted   = ref(false);
 const submitting  = ref(false);
 const serverError = ref('');
 
-const form = ref({ nome: '', cognome: '', email: '', note: '' });
+const form   = ref({ code: '', email: '', note: '' });
 const errors = ref({});
 
 onMounted(() => {
@@ -140,9 +144,10 @@ const clearAll = () => {
 
 function validate() {
   const e = {};
-  if (!form.value.nome)    e.nome    = 'Il nome è obbligatorio.';
-  if (!form.value.cognome) e.cognome = 'Il cognome è obbligatorio.';
-  if (!form.value.email)   e.email   = "L'email è obbligatoria.";
+  if (!form.value.code)
+    e.code = 'Il codice è obbligatorio.';
+  if (!form.value.email)
+    e.email = "L'email è obbligatoria.";
   else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.value.email))
     e.email = 'Inserisci un indirizzo email valido.';
   errors.value = e;
@@ -155,25 +160,27 @@ async function submitForm() {
 
   submitting.value = true;
 
+  const csrfParam = document.querySelector('meta[name="csrf-param"]')?.getAttribute('content') ?? '_csrf-frontend';
   const csrfToken = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content') ?? '';
 
+  const params = new URLSearchParams();
+  params.append(csrfParam, csrfToken);
+  params.append('code',    form.value.code);
+  params.append('email',   form.value.email);
+  params.append('note',    form.value.note);
+  params.append('fotoIds', JSON.stringify(fotos.value.map((f) => f.id)));
+
   try {
-    const res = await fetch('/lista/invia', {
+    const res = await fetch(props.inviaUrl, {
       method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'X-CSRF-Token': csrfToken,
-      },
-      body: JSON.stringify({
-        ...form.value,
-        fotoIds: fotos.value.map((f) => f.id),
-      }),
+      headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+      body: params.toString(),
     });
 
     const data = await res.json();
 
     if (!res.ok || data.error) {
-      serverError.value = data.error || 'Errore durante l\'invio. Riprova.';
+      serverError.value = data.error || "Errore durante l'invio. Riprova.";
     } else {
       localStorage.removeItem(LS_KEY);
       submitted.value = true;

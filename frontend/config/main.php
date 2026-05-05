@@ -17,6 +17,9 @@ return [
             // !!! insert a secret key in the following (if it is empty) - this is required by cookie validation
             'cookieValidationKey' => 'PUdKTylbzBNusPeMnnFv',
             'baseUrl' => '',
+            'parsers' => [
+                'application/json' => 'yii\web\JsonParser',
+            ],
         ],
         //removing bootstrap5 assets it manteins jQuery if some Yii2 plugin requires
         'assetManager' => [

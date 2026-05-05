@@ -1,6 +1,7 @@
 <?php
 
 /** @var yii\web\View $this */
+/** @var string $inviaUrl */
 
 use yii\helpers\Html;
 
@@ -12,6 +13,6 @@ $this->params['breadcrumbs'][] = $this->title;
 
     <h1 class="mb-4"><?= Html::encode($this->title) ?></h1>
 
-    <div id="lista-foto"></div>
+    <div id="lista-foto" data-invia-url="<?= Html::encode($inviaUrl) ?>"></div>
 
 </div>

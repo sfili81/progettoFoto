@@ -4,5 +4,6 @@ import ListaFoto from './components/ListaFoto.vue';
 export function initListaFoto() {
   const el = document.getElementById('lista-foto');
   if (!el) return;
-  createApp(ListaFoto).mount(el);
+  const inviaUrl = el.dataset.inviaUrl || '/lista/invia';
+  createApp(ListaFoto, { inviaUrl }).mount(el);
 }

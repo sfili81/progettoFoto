@@ -126,6 +126,12 @@ $this->params['breadcrumbs'][] = $this->title;
                         <?= Yii::t('backend', 'Carica') ?> <span id="folder-count"></span> foto
                     </button>
                 </div>
+                <div id="folder-spinner" class="mt-3 d-none align-items-center gap-2" style="display:none">
+                    <div class="spinner-border spinner-border-sm text-warning" role="status">
+                        <span class="visually-hidden">Caricamento...</span>
+                    </div>
+                    <small class="text-muted"><?= Yii::t('backend', 'Preparazione upload…') ?></small>
+                </div>
                 <div id="folder-progress" class="mt-3" style="display:none">
                     <div class="progress mb-1">
                         <div class="progress-bar progress-bar-striped progress-bar-animated"
@@ -307,11 +313,13 @@ $this->params['breadcrumbs'][] = $this->title;
         var uploaded  = 0;
         var errors    = 0;
         var total     = folderFiles.length;
-        \$('#folder-progress').show();
+        \$('#folder-spinner').removeClass('d-none').addClass('d-flex');
+        \$('#folder-progress').hide();
         \$('#import-result').hide();
 
         function uploadBatch(offset) {
             if (offset >= total) {
+                \$('#folder-spinner').addClass('d-none').removeClass('d-flex');
                 var msg = uploaded + ' foto caricate con successo.';
                 if (errors) { msg += ' Errori: ' + errors + '.'; }
                 \$('#import-result').removeClass('alert-danger')
@@ -355,6 +363,8 @@ $this->params['breadcrumbs'][] = $this->title;
                 },
                 error: function () { errors += batch.length; },
                 complete: function () {
+                    \$('#folder-spinner').addClass('d-none').removeClass('d-flex');
+                    \$('#folder-progress').show();
                     var done = Math.min(offset + BATCH, total);
                     var pct  = Math.round(done / total * 100);
                     \$('#folder-progress-bar').css('width', pct + '%');

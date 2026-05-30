@@ -7,6 +7,7 @@ use kartik\tree\TreeView;
 use kartik\tree\models\Tree;
 use yii\helpers\ArrayHelper;
 use yii\helpers\Html;
+use yii\helpers\Url;
 
 class CustomTreeView extends TreeView
 {
@@ -31,11 +32,9 @@ class CustomTreeView extends TreeView
 
         $thead = Html::tag(
             'div',
-            Html::tag('div', 'Nome',    ['class' => 'kv-col-name']) .
-                Html::tag('div', 'Livello', ['class' => 'kv-col-level']) .
-                Html::tag('div', 'Slug',    ['class' => 'kv-col-slug']) .
-                Html::tag('div', 'Stato',   ['class' => 'kv-col-status']) .
-                Html::tag('div', 'Azioni',  ['class' => 'kv-col-actions']),
+            Html::tag('div', 'Nome',   ['class' => 'kv-col-name']) .
+                Html::tag('div', 'Stato',  ['class' => 'kv-col-status']) .
+                Html::tag('div', 'Azioni', ['class' => 'kv-col-actions']),
             ['class' => 'kv-grid-thead']
         );
 
@@ -74,9 +73,7 @@ class CustomTreeView extends TreeView
         $out = Html::beginTag('ul', ['class' => 'kv-tree']) . "\n";
 
         foreach ($this->_nodes as $node) {
-            /**
-             * @var Tree $node
-             */
+            /** @var Tree $node */
             if (!$this->isAdmin && !$node->isVisible() || !$this->showInactive && !$node->isActive()) {
                 continue;
             }
@@ -84,13 +81,10 @@ class CustomTreeView extends TreeView
             $nodeDepth    = $node->$depthAttribute;
             $nodeLeft     = $node->$leftAttribute;
             $nodeRight    = $node->$rightAttribute;
-            $nodeKey      = $node->$keyAttribute;
-            $nodeName     = $node->$nameAttribute;
-            $nodeIcon     = $node->$iconAttribute;
-            $nodeIconType = $node->$iconTypeAttribute;
-            $nodeRoot     = isset($treeAttribute) ? $node->$treeAttribute : null;
+            $nodeKey  = $node->$keyAttribute;
+            $nodeName = $node->$nameAttribute;
+            $nodeRoot = isset($treeAttribute) ? $node->$treeAttribute : null;
 
-            // Reset quando cambia root
             if ($prevRoot !== null && $prevRoot !== $nodeRoot) {
                 $out .= Lib::str_repeat("</li>\n</ul>", $currDepth) . "</li>\n";
                 $currDepth = 0;
@@ -106,7 +100,6 @@ class CustomTreeView extends TreeView
                 $nodeName = is_callable($label) ? $label($node) : (is_array($label) ? ArrayHelper::getValue($label, $nodeKey, $nodeName) : $nodeName);
             }
 
-            // Identica logica originale Kartik
             if ($nodeDepth == $currDepth) {
                 if ($counter > 0) {
                     $out .= "</li>\n";
@@ -141,55 +134,72 @@ class CustomTreeView extends TreeView
 
             $css = [];
             if (!$isChild) {
-                $css[] = 'kv-parent ';
+                $css[] = 'kv-parent';
             }
             if (!$node->isVisible() && $this->isAdmin) {
                 $css[] = 'kv-invisible';
             }
             if ($this->showCheckbox && $node->isSelected()) {
-                $css[] = 'kv-selected ';
+                $css[] = 'kv-selected';
             }
-            if ($node->isCollapsed()) {
-                $css[] = 'kv-collapsed ';
+            if ($node->isCollapsed() || !$isChild) {
+                $css[] = 'kv-collapsed';
             }
             if ($node->isDisabled()) {
-                $css[] = 'kv-disabled ';
+                $css[] = 'kv-disabled';
             }
             if (!$node->isActive()) {
-                $css[] = 'kv-inactive ';
+                $css[] = 'kv-inactive';
             }
-            $indicators .= $this->renderToggleIconContainer() . "\n";
+
+            // Icone toggle custom con Font Awesome
+            if (!$isChild) {
+                $indicators .= Html::tag('span', '<i class="fa-solid fa-chevron-right"></i>', ['class' => 'kv-node-toggle kv-node-closed']) .
+                               Html::tag('span', '<i class="fa-solid fa-chevron-down"></i>',  ['class' => 'kv-node-toggle kv-node-opened']);
+            } else {
+                $indicators .= Html::tag('span', '<i class="fa-solid fa-file"></i>', [
+                    'class' => 'kv-node-toggle',
+                    'style' => 'display:inline-block;width:14px;',
+                ]);
+            }
+            $indicators .= "\n";
             $indicators .= $this->showCheckbox ? $this->renderCheckboxIconContainer() . "\n" : '';
+
             if (!empty($css)) {
                 Html::addCssClass($nodeOptions, $css);
             }
 
-            // ── Colonne extra ──
+            // Pulsanti azione per riga
             $actions =
                 Html::button('<i class="far fa-edit"></i>', [
-                    'class'     => 'btn btn-info mb-md-0 mb-2 kv-btn-edit',
+                    'class'     => 'btn btn-sm btn-info kv-btn-edit',
                     'title'     => 'Modifica',
                     'data-pjax' => '0',
                 ]) . ' ' .
-                ($isChild ? Html::button('<i class="far fa-trash-alt"></i>', [
-                    'class'     => 'btn btn-danger mb-md-0 mb-2 kv-btn-delete',
+                Html::button('<i class="fas fa-plus"></i>', [
+                    'class'     => 'btn btn-sm btn-success kv-btn-add-child',
+                    'title'     => 'Aggiungi figlio',
+                    'data-pjax' => '0',
+                ]) . ' ' .
+                Html::button('<i class="far fa-trash-alt"></i>', [
+                    'class'     => 'btn btn-sm btn-danger kv-btn-delete',
                     'title'     => 'Elimina',
+                    'data-pjax' => '0',
+                ]) .
+                ($isChild ? ' ' . Html::a('<i class="fas fa-images"></i>', Url::to(['/foto-gara/index', 'gara_id' => $nodeKey]), [
+                    'class'     => 'btn btn-sm btn-warning',
+                    'title'     => 'Carica foto',
                     'data-pjax' => '0',
                 ]) : '');
 
-            // Struttura identica all'originale Kartik + colonne extra
             $out .= Html::beginTag('li', $nodeOptions) . "\n" .
                 Html::beginTag('div', ['tabindex' => -1, 'class' => 'kv-tree-list']) . "\n" .
                 Html::beginTag('div', ['class' => 'kv-node-indicators']) . "\n" .
                 $indicators . "\n" .
                 '</div>' . "\n" .
                 Html::beginTag('div', ['tabindex' => -1, 'class' => 'kv-node-detail']) . "\n" .
-                $this->renderNodeIcon($nodeIcon, $nodeIconType, $isChild) . "\n" .
                 Html::tag('span', $nodeName, ['class' => 'kv-node-label']) . "\n" .
                 '</div>' . "\n" .
-                // Colonne extra visive
-                Html::tag('div', (string)($nodeDepth - 1), ['class' => 'kv-col-level-val']) .
-                Html::tag('div', $node->slug ?? '-', ['class' => 'kv-col-slug-val']) .
                 Html::tag(
                     'div',
                     $node->active
@@ -203,7 +213,6 @@ class CustomTreeView extends TreeView
             ++$counter;
         }
 
-        // Identica chiusura originale Kartik
         $out .= Lib::str_repeat("</li>\n</ul>", $nodeDepth) . "</li>\n";
         $out .= "</ul>\n";
 

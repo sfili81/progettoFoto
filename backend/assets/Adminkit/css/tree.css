@@ -1,28 +1,31 @@
-.kv-tree-container {
-  height: fit-content !important;
-  padding-bottom: 30px;
-}
 .kv-tree-container ul.kv-tree {
-  height: auto;
-  padding-left: 0 !important;
-  & li {
-    color: #000;
-  }
-  & > li:first-child {
-    border: none;
-  }
+    padding-left: 0 !important;
+    margin-top: 0px !important;
+    & li {color:#000;}
+    & > li:first-child{
+        border:none;
+        padding-block:1rem;
+    }
 }
 .kv-tree-container .kv-tree > li > ul > li {
-  margin-left: 0 !important;
-  padding-left: 0 !important;
-  background: none !important;
+    margin-left: 0 !important;
+    padding-left: 0 !important;
+    background: none !important;
 }
-/* Nasconde le icone  
-.kv-tree-container .kv-node-icon.kv-icon-child{display:none;}*/
+
+/* Frecce apri/chiudi */
 .kv-tree-container .kv-node-opened,
 .kv-tree-container .kv-node-closed {
-  display: none !important;
+  display: inline-block !important;
+  width: 14px;
+  text-align: center;
+  font-size: 10px;
+  color: #adb5bd;
+  cursor: pointer;
 }
+.kv-tree-container li:not(.kv-collapsed) > .kv-tree-list .kv-node-closed { display: none !important; }
+.kv-tree-container li.kv-collapsed > .kv-tree-list .kv-node-opened { display: none !important; }
+
 /* ── Wrapper principale ── */
 .kv-tree-wrapper {
   border: 1px solid #dee2e6;
@@ -81,19 +84,12 @@
 .kv-col-name {
   flex: 1;
 }
-.kv-col-level {
-  width: 80px;
-  text-align: center;
-}
-.kv-col-slug {
-  width: 200px;
-}
 .kv-col-status {
   width: 100px;
   text-align: center;
 }
 .kv-col-actions {
-  width: 120px;
+  width: 160px;
   text-align: center;
 }
 
@@ -116,25 +112,30 @@
 
 /* ── Indentazione tramite ul annidati ── */
 .kv-tree ul {
-  border-left: 2px solid #dee2e6 !important;
+  border-left: none !important;
   margin-left: 1.25rem !important;
   padding-left: 0 !important;
 }
 
 /* ── Ogni riga nodo ── */
 .kv-tree li .kv-tree-list {
+  top:0 !important;
   display: flex !important;
   align-items: center !important;
   border-radius: 0 !important;
-  border-bottom: 1px solid #f1f3f5 !important;
+  border: 1px solid #c3c3c3 !important;
   padding: 0.75rem !important;
   margin: 0 !important;
   min-height: 44px !important;
   transition: background 0.1s !important;
-  cursor: pointer !important;
+  margin-bottom: 10px !important;
+}
+.kv-tree li {border:none;}
+.kv-tree li.kv-parent {
+    border-bottom: 10px solid white;
 }
 .kv-tree li:last-child > .kv-tree-list {
-  border-bottom: none !important;
+  border-bottom: 1px solid #c3c3c3 !important;
 }
 .kv-tree li .kv-tree-list:hover {
   background: #f8f9fa !important;
@@ -146,6 +147,9 @@
   color: #1a5fb4 !important;
   font-weight: 600 !important;
 }
+.kv-tree li ul {
+  border-top: none !important;
+}
 
 /* ── Collassa figli ── */
 .kv-tree li.kv-collapsed > ul {
@@ -154,9 +158,10 @@
 
 /* ── Indicatori e dettaglio ── */
 .kv-node-indicators {
+  cursor: pointer;
   display: flex !important;
   align-items: center !important;
-  min-width: 22px !important;
+  min-width: 32px !important;
 }
 .kv-node-toggle {
   color: #adb5bd !important;
@@ -165,11 +170,12 @@
 .kv-node-detail {
   display: flex !important;
   align-items: center !important;
+  align-self: stretch !important;
   gap: 6px !important;
   flex: 1 !important;
 }
 .kv-node-label {
-  font-size: 14px !important;
+  font-size: 16px !important;
   color: #212529 !important;
 }
 .kv-icon-parent {
@@ -180,8 +186,6 @@
 }
 
 /* ── Colonne extra ── */
-.kv-col-level-val,
-.kv-col-slug-val,
 .kv-col-status-val,
 .kv-col-actions-val {
   display: flex !important;
@@ -189,22 +193,12 @@
   padding: 0 0.75rem !important;
   font-size: 14px !important;
 }
-.kv-col-level-val {
-  width: 80px !important;
-  justify-content: center !important;
-  color: #6c757d !important;
-}
-.kv-col-slug-val {
-  width: 200px !important;
-  color: #6c757d !important;
-  font-size: 13px !important;
-}
 .kv-col-status-val {
   width: 100px !important;
   justify-content: center !important;
 }
 .kv-col-actions-val {
-  width: 120px !important;
+  width: 160px !important;
   justify-content: center !important;
   gap: 4px !important;
 }

@@ -97,12 +97,12 @@ $this->params['breadcrumbs'][] = $this->title;
                         'allowedFileExtensions' => ['jpg', 'jpeg', 'png', 'webp', 'avif', 'gif'],
                         'maxFileSize'           => 10240,
                         'maxFileCount'          => 200,
+                        'showPreview'           => false,
                         'showRemove'            => true,
                         'showUpload'            => true,
                         'showCancel'            => true,
                         'dropZoneEnabled'       => true,
                         'dropZoneTitle'         => Yii::t('backend', 'Trascina le foto qui &hellip;'),
-                        'fileActionSettings'    => ['showDrag' => false],
                     ],
                 ]) ?>
 

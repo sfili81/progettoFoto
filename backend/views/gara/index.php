@@ -113,6 +113,20 @@ $(function () {
         \$el.treeview('select', [key]);
     });
 
+    // Pulsante "Aggiungi figlio" nelle righe dell'albero
+    $(document).on('click', '.kv-btn-add-child', function (e) {
+        e.stopPropagation();
+        var \$li = $(this).closest('li');
+        var plugin = \$el.data('treeview');
+        if (!plugin) { return; }
+        // Imposta kv-focussed sul nodo (la create() di Kartik lo cerca nel tree)
+        plugin.\$tree.find('.kv-node-detail').removeClass('kv-focussed');
+        \$li.find('> .kv-tree-list .kv-node-detail').addClass('kv-focussed');
+        // Mostra il modal e crea il nodo figlio
+        if (modalEl) { kvModal.show(); }
+        plugin.create();
+    });
+
     // Pulsante "Elimina" personalizzato nelle righe dell'albero
     $(document).on('click', '.kv-btn-delete', function (e) {
         e.stopPropagation();

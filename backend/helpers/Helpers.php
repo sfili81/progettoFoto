@@ -172,4 +172,22 @@ class Helpers
             ];
         }
     }
+
+     /**
+     *  Function for setting state of a visibility into backend
+     *
+     **/
+    public static function showStateRequest(Object $model)
+    {
+
+        $states = Yii::$app->params['stateRequest'];
+        $css = "";
+        switch($model->state){
+            case '0': $css= "label-primary";break;
+            case '1': $css= "label-success";break;
+            case '2': $css= "label-secondary";break;
+        }
+
+        return "<span class='label {$css}'>{$states[$model->state]}</span> ";
+    }
 }

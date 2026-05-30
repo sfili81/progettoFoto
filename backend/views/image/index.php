@@ -68,7 +68,7 @@ $this->params['breadcrumbs'][] = $this->title;
                             //'created_at',
                             //'updated_at',
                             [
-                                'class' => ActionColumn::className(),
+                                'class' => ActionColumn::class,
                                 'header' => 'Azioni',
                                 'buttons'=>[
                                     'view'=>function ($url, Image $model) {return Helpers::actionButton( $model, 'view');},

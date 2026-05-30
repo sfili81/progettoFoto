@@ -47,18 +47,18 @@ class Cart extends \yii\db\ActiveRecord
     /**
      * {@inheritdoc}
      */
-    public function attributeLabels()
+   public function attributeLabels()
     {
         return [
-            'id' => 'ID',
-            'state' => 'State',
-            'email' => 'Email',
-            'code' => 'Code',
-            'list_images' => 'List Images',
-            'note' => 'Note',
-            'internal_details' => 'Internal Details',
-            'created_at' => 'Created At',
-            'updated_at' => 'Updated At',
+            'id' => Yii::t('backend', 'ID'),
+            'state' => Yii::t('backend', 'State'),
+            'email' => Yii::t('backend', 'Email'),
+            'code' => Yii::t('backend', 'Code'),
+            'list_images' => Yii::t('backend', 'List Images'),
+            'note' => Yii::t('backend', 'Note'),
+            'internal_details' => Yii::t('backend', 'Internal Details'),
+            'created_at' => Yii::t('backend', 'Created At'),
+            'updated_at' => Yii::t('backend', 'Updated At'),
         ];
     }
 

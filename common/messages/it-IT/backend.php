@@ -117,4 +117,5 @@ return [
     'Og Description' => 'Preview Link Descrizione',
     'Og Image' => 'Preview Link Immagine',
 
+    'Code' => 'Codice atleta',
 ];

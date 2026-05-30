@@ -65,5 +65,11 @@ return [
         ],
     ],
 
+    /* Stati richiesta */
+    'stateRequest' => [
+        '0' => 'Nuova',
+        '1' => 'Pagato',
+        '2' => 'Chiusa'
+    ],
 
 ];

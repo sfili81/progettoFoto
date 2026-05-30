@@ -108,6 +108,35 @@ $this->params['breadcrumbs'][] = $this->title;
             </div>
         </div>
 
+        <!-- Import da cartella locale -->
+        <div class="card mt-3">
+            <div class="card-body">
+                <h5 class="card-title mb-3">
+                    <i class="fas fa-folder-open me-2 text-warning"></i>
+                    <?= Yii::t('backend', 'Importa da cartella') ?>
+                </h5>
+                <input type="file" id="folder-picker" webkitdirectory multiple accept="image/*" style="display:none">
+                <div class="d-flex flex-wrap gap-2 align-items-center">
+                    <button type="button" class="btn btn-outline-secondary" id="btn-pick-folder">
+                        <i class="fas fa-folder-open me-1"></i><?= Yii::t('backend', 'Seleziona cartella') ?>
+                    </button>
+                    <span id="folder-info" class="text-muted small"></span>
+                    <button type="button" class="btn btn-warning ms-auto" id="btn-upload-folder" style="display:none">
+                        <i class="fas fa-upload me-1"></i>
+                        <?= Yii::t('backend', 'Carica') ?> <span id="folder-count"></span> foto
+                    </button>
+                </div>
+                <div id="folder-progress" class="mt-3" style="display:none">
+                    <div class="progress mb-1">
+                        <div class="progress-bar progress-bar-striped progress-bar-animated"
+                             id="folder-progress-bar" style="width:0%"></div>
+                    </div>
+                    <small class="text-muted" id="folder-progress-text"></small>
+                </div>
+                <div id="import-result" class="mt-2" style="display:none"></div>
+            </div>
+        </div>
+
         <!-- Griglia foto salvate (paginata) -->
         <div class="card mt-3">
             <div class="card-body">
@@ -165,12 +194,15 @@ $this->params['breadcrumbs'][] = $this->title;
 
 </div>
 
+
 <?php if ($selectedNode !== null):
-    $deleteUrl = Json::encode(Url::to(['/foto-gara/delete-photo']));
-    $listUrl   = Json::encode(Url::to(['/foto-gara/photo-list']));
-    $jsGaraId  = (int) $gara_id;
-    $jsTotal   = (int) $totalFotos;
-    $jsShown   = count($fotos);
+    $deleteUrl     = Json::encode(Url::to(['/foto-gara/delete-photo']));
+    $listUrl       = Json::encode(Url::to(['/foto-gara/photo-list']));
+    $listFolderUrl = Json::encode(Url::to(['/foto-gara/list-folder']));
+    $importUrl     = Json::encode(Url::to(['/foto-gara/upload']));
+    $jsGaraId      = (int) $gara_id;
+    $jsTotal       = (int) $totalFotos;
+    $jsShown       = count($fotos);
 
     $this->registerJs(<<<JS
 (function () {
@@ -243,6 +275,96 @@ $this->params['breadcrumbs'][] = $this->title;
                 \$('#load-more-wrap').hide();
             }
         });
+    });
+
+    /* ---- Import da cartella locale ---- */
+    var folderFiles  = [];
+    var imgRe        = /\.(jpe?g|png|webp|gif|avif)$/i;
+    var BATCH        = 10;
+
+    \$('#btn-pick-folder').on('click', function () {
+        \$('#folder-picker').val('').trigger('click');
+    });
+
+    \$('#folder-picker').on('change', function () {
+        folderFiles = Array.from(this.files).filter(function (f) { return imgRe.test(f.name); });
+        if (!folderFiles.length) {
+            \$('#folder-info').text('Nessuna immagine trovata.');
+            \$('#btn-upload-folder').hide();
+            return;
+        }
+        var dir = folderFiles[0].webkitRelativePath.split('/')[0] || 'Cartella selezionata';
+        \$('#folder-info').text(dir + ' — ' + folderFiles.length + ' immagini');
+        \$('#folder-count').text(folderFiles.length);
+        \$('#btn-upload-folder').show();
+        \$('#folder-progress').hide();
+        \$('#import-result').hide();
+    });
+
+    \$('#btn-upload-folder').on('click', function () {
+        if (!folderFiles.length) { return; }
+        var \$btn      = \$(this).prop('disabled', true);
+        var uploaded  = 0;
+        var errors    = 0;
+        var total     = folderFiles.length;
+        \$('#folder-progress').show();
+        \$('#import-result').hide();
+
+        function uploadBatch(offset) {
+            if (offset >= total) {
+                var msg = uploaded + ' foto caricate con successo.';
+                if (errors) { msg += ' Errori: ' + errors + '.'; }
+                \$('#import-result').removeClass('alert-danger')
+                    .addClass('alert alert-success').text(msg).show();
+                \$('#folder-progress-bar').css('width','100%').removeClass('progress-bar-animated');
+                \$('#folder-progress-text').text('');
+                \$btn.prop('disabled', false);
+                folderFiles = [];
+                \$('#btn-upload-folder').hide();
+                \$('#folder-info').text('');
+                // Aggiorna griglia
+                curPage = 1;
+                \$.getJSON(listUrl, { gara_id: garaId, page: 1 }, function (r) {
+                    \$('#foto-grid').empty(); shown = 0;
+                    appendCards(r.items);
+                    totalFotos = r.total;
+                    \$('#foto-count').text(totalFotos);
+                    if (totalFotos > 0) { \$('#foto-empty-msg').hide(); }
+                    \$('#load-more-wrap').toggle(r.hasMore);
+                    if (r.hasMore) { updateInfo(); }
+                });
+                return;
+            }
+
+            var batch = folderFiles.slice(offset, offset + BATCH);
+            var fd    = new FormData();
+            fd.append('_csrf', yii.getCsrfToken());
+            fd.append('gara_id', garaId);
+            batch.forEach(function (f) { fd.append('imageFiles[]', f); });
+
+            \$.ajax({
+                url: $importUrl,
+                method: 'POST',
+                data: fd,
+                processData: false,
+                contentType: false,
+                dataType: 'json',
+                success: function (res) {
+                    if (res.initialPreview) { uploaded += res.initialPreview.length; }
+                    else if (res.imported)   { uploaded += res.imported; }
+                },
+                error: function () { errors += batch.length; },
+                complete: function () {
+                    var done = Math.min(offset + BATCH, total);
+                    var pct  = Math.round(done / total * 100);
+                    \$('#folder-progress-bar').css('width', pct + '%');
+                    \$('#folder-progress-text').text(done + ' di ' + total + ' elaborate...');
+                    uploadBatch(offset + BATCH);
+                }
+            });
+        }
+
+        uploadBatch(0);
     });
 
     /* ---- Helpers ---- */

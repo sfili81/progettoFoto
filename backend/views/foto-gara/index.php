@@ -97,7 +97,6 @@ $this->params['breadcrumbs'][] = $this->title;
                         'allowedFileExtensions' => ['jpg', 'jpeg', 'png', 'webp', 'avif', 'gif'],
                         'maxFileSize'           => 10240,
                         'maxFileCount'          => 200,
-                        'showPreview'           => false,
                         'showRemove'            => true,
                         'showUpload'            => true,
                         'showCancel'            => true,
@@ -226,6 +225,7 @@ $this->params['breadcrumbs'][] = $this->title;
 
     /* ---- Aggiorna griglia al termine di ogni batch upload ---- */
     \$('#foto-gara-fileinput').on('filebatchuploadcomplete.fileinput', function () {
+        \$(this).fileinput('clear');
         curPage = 1;
         \$.getJSON(listUrl, { gara_id: garaId, page: 1 }, function (res) {
             \$('#foto-grid').empty();

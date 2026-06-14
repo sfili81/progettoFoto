@@ -36,7 +36,8 @@ AppAsset::register($this);
         $rootGara = \common\models\Gara::find()->where(['lvl' => 0])->one();
         $garaName = $rootGara ? Html::encode($rootGara->name) : Html::encode(Yii::$app->name);
         ?>
-        <div class="container text-center">
+        <div class="container d-flex align-items-center">
+            <img src="<?= Yii::$app->request->baseUrl ?>/img/logo.png" alt="Logo" style="height:40px; margin-right:12px;">
             <h4 class="mb-0"><?= $garaName ?></h4>
         </div>
     </header>

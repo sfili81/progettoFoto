@@ -6,5 +6,6 @@ export function initGaraSelector() {
   if (!el) return;
 
   const fotos = JSON.parse(el.dataset.fotos || '[]');
-  createApp(GaraSelector, { fotos }).mount(el);
+  const logoUrl = el.dataset.logoUrl || '';
+  createApp(GaraSelector, { fotos, logoUrl }).mount(el);
 }

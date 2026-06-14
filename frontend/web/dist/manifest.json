@@ -1,7 +1,7 @@
 {
-  "main.css": "/dist/bundle.7ad0c45bd37c1010969a.min.css",
-  "main.js": "/dist/app.c849bc3df4d9ca468d99.min.js",
+  "main.css": "/dist/bundle.93c3a9175c72d11b8ad8.min.css",
+  "main.js": "/dist/app.42eb50842c4bfccca4cb.min.js",
   "app.min.js": "/dist/app.920833140554cdad2ad7.min.js",
-  "bundle.min.css.map": "/dist/bundle.7ad0c45bd37c1010969a.min.css.map",
+  "bundle.min.css.map": "/dist/bundle.93c3a9175c72d11b8ad8.min.css.map",
   "app.min.js.map": "/dist/app.920833140554cdad2ad7.min.js.map"
 }

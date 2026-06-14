@@ -13,8 +13,11 @@
           @click="openModal(foto)"
         >
           <div class="foto-badge">✓</div>
-          <img :src="foto.url" class="foto-img card-img-top" :alt="foto.caption" loading="lazy">
-          <div v-if="foto.caption" class="card-body p-2">
+          <div class="foto-img-wrap">
+            <img :src="foto.url" class="foto-img card-img-top" :alt="foto.caption" loading="lazy">
+            <img v-if="logoUrl" :src="logoUrl" class="foto-watermark" alt="">
+          </div>
+          <div v-if="foto.caption" class="card-body p-2 mt-auto">
             <p class="card-text small text-muted mb-0">{{ foto.caption }}</p>
           </div>
         </div>
@@ -27,7 +30,10 @@
         <div v-if="modalFoto" class="foto-modal-overlay" @click.self="closeModal">
           <div class="foto-modal-box">
             <button class="foto-modal-close" @click="closeModal" aria-label="Chiudi">✕</button>
+            <div class="foto-modal-img-wrap">
             <img :src="modalFoto.url" :alt="modalFoto.caption" class="foto-modal-img">
+            <img v-if="logoUrl" :src="logoUrl" class="foto-watermark foto-watermark--lg" alt="">
+          </div>
             <p v-if="modalFoto.caption" class="foto-modal-caption">{{ modalFoto.caption }}</p>
             <button
               class="btn btn-primary mt-3 px-4"
@@ -78,6 +84,7 @@ const LS_KEY = 'garaFotoLista';
 const props = defineProps({
   fotos:    { type: Array,  default: () => [] },
   listaUrl: { type: String, default: '/lista/index' },
+  logoUrl:  { type: String, default: '' },
 });
 
 const modalFoto    = ref(null);
@@ -128,6 +135,37 @@ const addToList = () => {
 </script>
 
 <style scoped>
+.foto-img-wrap {
+  position: relative;
+  overflow: hidden;
+}
+
+.foto-modal-img-wrap {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.foto-watermark {
+  position: absolute;
+  bottom: 8px;
+  right: 8px;
+  width: 28%;
+  max-width: 90px;
+  pointer-events: none;
+  filter: grayscale(1) brightness(2) opacity(0.45);
+  mix-blend-mode: luminosity;
+}
+
+.foto-watermark--lg {
+  width: 20%;
+  max-width: 140px;
+  bottom: 12px;
+  right: 12px;
+  filter: grayscale(1) brightness(2) opacity(0.5);
+}
+
 .foto-modal-overlay {
   position: fixed;
   inset: 0;
@@ -162,6 +200,7 @@ const addToList = () => {
   line-height: 1;
   color: #555;
   cursor: pointer;
+  z-index: 10;
 }
 
 .foto-modal-close:hover {

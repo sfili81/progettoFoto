@@ -17,6 +17,7 @@ $this->params['breadcrumbs'][] = $this->title;
 
     <div id="gara-selector"
          data-fotos="<?= Html::encode($fotosJson) ?>"
-         data-lista-url="<?= Html::encode($listaUrl) ?>"></div>
+         data-lista-url="<?= Html::encode($listaUrl) ?>"
+         data-logo-url="<?= Html::encode(Yii::$app->request->baseUrl . '/img/logo.png') ?>"></div>
 
 </div>

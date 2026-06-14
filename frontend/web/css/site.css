@@ -157,13 +157,8 @@ a.desc:after {
     user-select: none;
 }
 
-.foto-card:hover {
-    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.18);
-    transform: translateY(-2px);
-}
 
 .foto-card--selected {
-    box-shadow: 0 0 0 3px #0d6efd;
 }
 
 .foto-badge {
@@ -173,7 +168,7 @@ a.desc:after {
     width: 28px;
     height: 28px;
     border-radius: 50%;
-    background: #0d6efd;
+    background: #198754;
     color: #fff;
     display: flex;
     align-items: center;

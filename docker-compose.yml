@@ -25,8 +25,8 @@ services:
     environment:
       - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
       - MYSQL_DATABASE=${MYSQL_DATABASE}
-      - MYSQL_USER=${MYSQL_USER}
-      - MYSQL_PASSWORD=${MYSQL_PASSWORD}
+      #- MYSQL_USER=${MYSQL_USER}
+      #- MYSQL_PASSWORD=${MYSQL_PASSWORD}
     ports:
       - '3306:3306'
 
@@ -40,15 +40,15 @@ services:
 
   # If you want to use a phpmyadmin instance inside docker use this
 
-  # phpmyadmin:
-  #  image: phpmyadmin/phpmyadmin
-  #  ports:
-  #    - '8888:80'
-  #  environment:
-  #    - PMA_ARBITRARY=1
-  #    - PMA_HOST=mysql
-  #  depends_on:
-  #    - mysql
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin
+    ports:
+      - '8888:80'
+    environment:
+      - PMA_ARBITRARY=1
+      - PMA_HOST=mysql
+    depends_on:
+      - mysql
 
   #pgsql:
   #  image: postgres:9.5

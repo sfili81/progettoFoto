@@ -50,3 +50,6 @@ phpunit.phar
 
 # ignore .env files
 .env
+
+#ignore simlink
+backend/web/frontend
